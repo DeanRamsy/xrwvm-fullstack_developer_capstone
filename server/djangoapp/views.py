@@ -7,7 +7,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import logout
 from django.contrib import messages
 from datetime import datetime
-
+from django.contrib.auth import logout
 from django.http import JsonResponse
 from django.contrib.auth import login, authenticate
 import logging
@@ -48,37 +48,26 @@ def logout_user(request):
     return JsonResponse(data)
 
 # Create a `registration` view to handle sign up request
+
 @csrf_exempt
-def registration(request):
-    context = {}
-
-    data = json.loads(request.body)
-    username = data['userName']
-    password = data['password']
-    first_name = data['firstName']
-    last_name = data['lastName']
-    email = data['email']
-    username_exist = False
-    email_exist = False
-    try:
-        # Check if user already exists
-        User.objects.get(username=username)
-        username_exist = True
-    except:
-        # If not, simply log this is a new user
-        logger.debug("{} is new user".format(username))
-
-    # If it is a new user
-    if not username_exist:
-        # Create user in auth_user table
-        user = User.objects.create_user(username=username, first_name=first_name, last_name=last_name,password=password, email=email)
-        # Login the user and redirect to list page
+def register_user(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        username = data.get('userName')
+        password = data.get('password')
+        first_name = data.get('firstName')
+        last_name = data.get('lastName')
+        email = data.get('email')
+        
+        if User.objects.filter(username=username).exists():
+            return JsonResponse({"status": "failed", "error": "Already Registered"})
+        
+        user = User.objects.create_user(username=username, password=password, first_name=first_name, last_name=last_name, email=email)
         login(request, user)
-        data = {"userName":username,"status":"Authenticated"}
-        return JsonResponse(data)
-    else :
-        data = {"userName":username,"error":"Already Registered"}
-        return JsonResponse(data)
+        return JsonResponse({"status": "success", "userName": user.username})
+    else:
+        return JsonResponse({"status": "failed", "message": "Only POST requests are allowed"})
+
 
 # # Update the `get_dealerships` view to render the index page with
 # a list of dealerships

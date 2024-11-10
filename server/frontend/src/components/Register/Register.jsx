@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import "./Register.css";
-import user_icon from "../assets/person.png"
-import email_icon from "../assets/email.png"
-import password_icon from "../assets/password.png"
-import close_icon from "../assets/close.png"
+import user_icon from "../assets/person.png";
+import email_icon from "../assets/email.png";
+import password_icon from "../assets/password.png";
+import close_icon from "../assets/close.png";
 
 const Register = () => {
 
@@ -48,7 +48,7 @@ const Register = () => {
     }
 };
 
-  return(
+  return (
     <div className="register_container" style={{width: "50%"}}>
       <div className="header" style={{display: "flex",flexDirection: "row", justifyContent: "space-between"}}>
           <span className="text" style={{flexGrow:"1"}}>SignUp</span> 
@@ -92,7 +92,7 @@ const Register = () => {
         </div>
       </form>
       </div>
-  )
-}
+  );
+};
 
 export default Register;
